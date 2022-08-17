@@ -8,6 +8,7 @@ from io import BytesIO
 import logging
 import warnings
 import string
+import random
 
 import numpy as np
 import torch
@@ -129,8 +130,13 @@ class CaptionDataset(OFADataset):
 
         if self.split == 'train' and not self.scst:
             caption = caption.translate(self.transtab).strip()
-            caption_token_list = caption.strip().split()
-            tgt_caption = ' '.join(caption_token_list[:self.max_tgt_length])
+            caption_token_list = caption.strip().split(',')
+            caption_token_list = list(map(str.strip, caption_token_list))
+            random.shuffle(caption_token_list)
+            interspersed = [','] * (len(caption_token_list) * 2 - 1)
+            interspersed[0::2] = caption_token_list
+            caption_token_list = interspersed
+            tgt_caption = ''.join(caption_token_list[:self.max_tgt_length])
         else:
             caption = ' '.join(caption.strip().split())
             caption_list = [cap.translate(self.transtab).strip() for cap in caption.strip().split('&&')]
