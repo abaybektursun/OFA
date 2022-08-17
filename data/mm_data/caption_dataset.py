@@ -96,8 +96,10 @@ class CaptionDataset(OFADataset):
         self.max_tgt_length = max_tgt_length
         self.patch_image_size = patch_image_size
         self.scst = scst
-
-        self.transtab = str.maketrans({key: None for key in string.punctuation})
+        
+        trans = {key: None for key in string.punctuation}
+        del trans[',']
+        self.transtab = str.maketrans(trans)
 
         if imagenet_default_mean_and_std:
             mean = IMAGENET_DEFAULT_MEAN

@@ -33,7 +33,9 @@ def decode_fn(x, tgt_dict, bpe, generator, tokenizer=None):
 
 
 def eval_caption(task, generator, models, sample, **kwargs):
-    transtab = str.maketrans({key: None for key in string.punctuation})
+    trans = {key: None for key in string.punctuation}
+    del trans[',']
+    self.transtab = str.maketrans(trans)
     hypos = task.inference_step(generator, models, sample)
     results = []
     for i, sample_id in enumerate(sample["id"].tolist()):
